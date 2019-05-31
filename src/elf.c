@@ -87,6 +87,43 @@ const char* machine_string (enum E_MACHINE machine) {
   return E_MACHINE_STRINGS[index];
 };
 
+const char* program_type_string (enum P_TYPE type) {
+  static const char* P_TYPE_STRINGS[] = {
+    "Program header table entry unused", "Loadable segment",
+    "Dynamic linking information", "Interpreter information",
+    "Auxiliary information", "Reserved",
+    "Segment containing program header table", "OS specific"
+  };
+  unsigned int index = 0;
+
+  switch (type) {
+    case PT_NULL:
+      index = 0;
+      break;
+    case PT_LOAD:
+      index = 1;
+      break;
+    case PT_DYNAMIC:
+      index = 2;
+      break;
+    case PT_INTERP:
+      index = 3;
+      break;
+    case PT_NOTE:
+      index = 4;
+      break;
+    case PT_SHILB:
+      index = 5;
+      break;
+    case PT_PHDR:
+      index = 6;
+      break;
+    default:
+      index = 7;
+  };
+  return P_TYPE_STRINGS[index];
+};
+
 const struct ELF32_HEADER* load_elf_file (const char* path) {
   static unsigned char buffer[55];
   FILE* file = fopen (path, "rb");
@@ -94,4 +131,9 @@ const struct ELF32_HEADER* load_elf_file (const char* path) {
     fread (buffer, sizeof (buffer), 1, file);
   fclose (file);
   return (struct ELF32_HEADER*)buffer;
+};
+
+unsigned int magic_number (void) {
+  static const uint32_t E_IDENT = 0x7F454C46;
+  return E_IDENT;
 };
